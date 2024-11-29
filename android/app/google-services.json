@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1098977678454",
+    "project_id": "ai-teacher-tools",
+    "storage_bucket": "ai-teacher-tools.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1098977678454:android:97fd237b5c65386597fb57",
+        "android_client_info": {
+          "package_name": "com.example.ai_teacher_tools"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDo0yWDueg4yDfVLzKVUsvxGVNpAACJkjM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
