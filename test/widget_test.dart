@@ -1,15 +1,24 @@
-// ignore: unused_import
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:mockito/mockito.dart';
+// Import path_provider
 import 'package:ai_teacher_tools/main.dart';
 import 'package:ai_teacher_tools/models/student.dart';
+import 'dart:io';
+// Import the generated mocks
 
 void main() async {
   // Initialize Hive for testing
   await Hive.initFlutter();
   Hive.registerAdapter(StudentAdapter());
   final attendanceBox = await Hive.openBox<Student>('attendance_test'); // Use a test-specific box
+
+  // Mock the PathProvider
+  final mockPathProvider = MockPathProvider();
+
+  // Ensure the getApplicationDocumentsDirectory method is mocked
+  when(mockPathProvider.getApplicationDocumentsDirectory())
+      .thenAnswer((_) async => Directory('/mock/directory'));
 
   testWidgets('Verify HomeScreen loads correctly', (WidgetTester tester) async {
     // Build the app
@@ -49,4 +58,8 @@ void main() async {
     // Verify a snackbar appears with the expected attendance data
     expect(find.text('Student: Alice, Present: true'), findsOneWidget);
   });
+}
+
+class MockPathProvider {
+  getApplicationDocumentsDirectory() {}
 }

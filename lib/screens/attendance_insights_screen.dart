@@ -6,7 +6,7 @@ class AttendanceInsightsScreen extends StatelessWidget {
 
   const AttendanceInsightsScreen({
     super.key,
-    this.attendanceRates = const [0.85, 0.9, 0.88, 0.92, 0.95], // Example data
+    this.attendanceRates = const [0.85, 0.9, 0.88, 0.92, 0.95],
   });
 
   @override

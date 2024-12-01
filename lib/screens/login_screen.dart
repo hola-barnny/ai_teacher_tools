@@ -15,12 +15,12 @@ class _LoginScreenState extends State<LoginScreen> {
   final _passwordController = TextEditingController();
   final _auth = FirebaseAuth.instance;
   final _formKey = GlobalKey<FormState>();
-  bool _isLoading = false; // New: Loading state
+  bool _isLoading = false;
 
   Future<void> _login() async {
     if (_formKey.currentState?.validate() ?? false) {
       setState(() {
-        _isLoading = true; // Show loading spinner
+        _isLoading = true;
       });
       try {
         await _auth.signInWithEmailAndPassword(
@@ -37,7 +37,7 @@ class _LoginScreenState extends State<LoginScreen> {
         );
       } finally {
         setState(() {
-          _isLoading = false; // Hide loading spinner
+          _isLoading = false;
         });
       }
     }

@@ -1,6 +1,6 @@
 import 'package:hive/hive.dart';
 
-part 'student.g.dart'; // Generate the adapter
+part 'student.g.dart';
 
 @HiveType(typeId: 0)
 class Student {
