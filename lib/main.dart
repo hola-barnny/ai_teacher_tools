@@ -1,79 +1,82 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
-
-
-// Screens
-import 'screens/attendance_screen.dart';
-import 'screens/dashboard_screen.dart';
-import 'screens/grading_screen.dart';
-import 'screens/login_screen.dart';
-import 'screens/settings_screen.dart';
-import 'screens/attendance_insights_screen.dart';
-
-// Services
-import 'services/analytics_service.dart';
-import 'services/grading_service.dart';
-import 'services/lesson_service.dart';
-import 'services/offline_service.dart';
-
-// Third-party utilities
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:provider/provider.dart';
+import 'package:ai_teacher_tools/models/student.dart';
 
 void main() async {
-  // Ensure Flutter bindings are initialized
   WidgetsFlutterBinding.ensureInitialized();
 
   // Initialize Hive
   await Hive.initFlutter();
-  await Hive.openBox('attendance'); // Example box for attendance data
-  await Hive.openBox('grades'); // Example box for grades
 
-  // Initialize Firebase
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  // Register the adapter for Student model
+  Hive.registerAdapter(StudentAdapter());
 
-  // Initialize Local Notifications
-  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = 
-      FlutterLocalNotificationsPlugin();
-  const AndroidInitializationSettings initializationSettingsAndroid = 
-      AndroidInitializationSettings('@mipmap/ic_launcher');
-  const InitializationSettings initializationSettings = 
-      InitializationSettings(android: initializationSettingsAndroid);
-  await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+  // Open the box for storing attendance data
+  var attendanceBox = await Hive.openBox<Student>('attendance');
 
-  // Run the app
-  runApp(MyApp());
+  runApp(MyApp(attendanceBox: attendanceBox));
 }
 
 class MyApp extends StatelessWidget {
+  final Box<Student> attendanceBox;
+
+  const MyApp({super.key, required this.attendanceBox});
+
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        // Add your services as providers if using Provider for state management
-        Provider(create: (_) => AnalyticsService()),
-        Provider(create: (_) => GradingService()),
-        Provider(create: (_) => LessonService()),
-        Provider(create: (_) => OfflineService()),
-      ],
-      child: MaterialApp(
-        title: 'AI Teacher Tools',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
+    return MaterialApp(
+      title: 'AI-Enhanced Teacher Tools',
+      theme: ThemeData(primarySwatch: Colors.blue),
+      home: HomeScreen(attendanceBox: attendanceBox),
+    );
+  }
+}
+
+class HomeScreen extends StatelessWidget {
+  final Box<Student> attendanceBox;
+
+  const HomeScreen({super.key, required this.attendanceBox});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Attendance Management'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            ElevatedButton(
+              onPressed: () {
+                // Create a new student attendance record and store it
+                var student = Student(name: 'Alice', isPresent: true);
+                attendanceBox.put('student_1', student);
+
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: Text('Attendance for Alice marked as present!'),
+                ));
+              },
+              child: Text('Mark Attendance for Alice'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                // Retrieve and display Alice's attendance data
+                var student = attendanceBox.get('student_1');
+                if (student != null) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text('Student: ${student.name}, Present: ${student.isPresent}'),
+                  ));
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text('No attendance data found for Alice.'),
+                  ));
+                }
+              },
+              child: Text('Check Alice\'s Attendance'),
+            ),
+          ],
         ),
-        initialRoute: '/',
-        routes: {
-          '/': (context) => LoginScreen(),
-          '/dashboard': (context) => DashboardScreen(),
-          '/attendance': (context) => AttendanceScreen(),
-          '/attendance-insights': (context) => AttendanceInsightsScreen(),
-          '/grading': (context) => GradingScreen(),
-          '/settings': (context) => SettingsScreen(),
-        },
       ),
     );
   }

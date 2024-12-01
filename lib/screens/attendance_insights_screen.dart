@@ -2,7 +2,12 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
 class AttendanceInsightsScreen extends StatelessWidget {
-  final List<double> attendanceRates = [0.85, 0.9, 0.88, 0.92, 0.95]; // Example data
+  final List<double> attendanceRates;
+
+  const AttendanceInsightsScreen({
+    Key? key,
+    this.attendanceRates = const [0.85, 0.9, 0.88, 0.92, 0.95], // Example data
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +77,7 @@ class AttendanceInsightsScreen extends StatelessWidget {
                         border: Border.all(color: Colors.black.withOpacity(0.2)),
                       ),
                       minX: 0,
-                      maxX: attendanceRates.length - 1.toDouble(),
+                      maxX: (attendanceRates.length - 1).toDouble(),
                       minY: 80,
                       maxY: 100,
                       lineBarsData: [
@@ -81,7 +86,7 @@ class AttendanceInsightsScreen extends StatelessWidget {
                             return FlSpot(e.key.toDouble(), e.value * 100);
                           }).toList(),
                           isCurved: true,
-                          gradient: LinearGradient(
+                          gradient: const LinearGradient(
                             colors: [Colors.blue, Colors.lightBlueAccent],
                             begin: Alignment.centerLeft,
                             end: Alignment.centerRight,
@@ -111,9 +116,9 @@ class AttendanceInsightsScreen extends StatelessWidget {
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 10),
-            Text(
+            const Text(
               'The attendance rate over the past week shows consistent improvement, reaching a peak of 95%. This indicates a strong student engagement.',
-              style: const TextStyle(fontSize: 14),
+              style: TextStyle(fontSize: 14),
             ),
           ],
         ),

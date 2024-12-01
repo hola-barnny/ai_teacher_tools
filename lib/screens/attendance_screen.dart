@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class AttendanceScreen extends StatefulWidget {
+  const AttendanceScreen({super.key});
+
   @override
   _AttendanceScreenState createState() => _AttendanceScreenState();
 }

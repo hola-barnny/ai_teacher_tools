@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:ai_teacher_tools/services/grading_service.dart'; // Import the grading service
 
 class GradingScreen extends StatefulWidget {
+  const GradingScreen({super.key});
+
   @override
   _GradingScreenState createState() => _GradingScreenState();
 }
