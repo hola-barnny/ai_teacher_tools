@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'AI-Enhanced Teacher Tools',
-      theme: ThemeData(primarySwatch: Colors.blue),
+      theme: ThemeData(primarySwatch: Colors.deepPurple), // Updated primary color
       home: HomeScreen(attendanceBox: attendanceBox),
     );
   }
@@ -41,7 +41,8 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Attendance Management'),
+        title: const Text('Attendance Management'),
+        backgroundColor: Colors.deepPurple, // Matching the theme color
       ),
       body: Center(
         child: Column(
@@ -53,27 +54,42 @@ class HomeScreen extends StatelessWidget {
                 var student = Student(name: 'Alice', isPresent: true);
                 attendanceBox.put('student_1', student);
 
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  content: Text('Attendance for Alice marked as present!'),
-                ));
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Attendance for Alice marked as present!'),
+                  ),
+                );
               },
-              child: Text('Mark Attendance for Alice'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.deepPurpleAccent,
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+              ),
+              child: const Text('Mark Attendance for Alice'),
             ),
+            const SizedBox(height: 20), // Added spacing between buttons
             ElevatedButton(
               onPressed: () {
                 // Retrieve and display Alice's attendance data
                 var student = attendanceBox.get('student_1');
                 if (student != null) {
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Text('Student: ${student.name}, Present: ${student.isPresent}'),
-                  ));
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Student: ${student.name}, Present: ${student.isPresent}'),
+                    ),
+                  );
                 } else {
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Text('No attendance data found for Alice.'),
-                  ));
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('No attendance data found for Alice.'),
+                    ),
+                  );
                 }
               },
-              child: Text('Check Alice\'s Attendance'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.deepPurpleAccent,
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+              ),
+              child: const Text('Check Alice\'s Attendance'),
             ),
           ],
         ),

@@ -1,30 +1,52 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
+// ignore: unused_import
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:ai_teacher_tools/main.dart';
+import 'package:ai_teacher_tools/models/student.dart';
 
-void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(MyApp());
+void main() async {
+  // Initialize Hive for testing
+  await Hive.initFlutter();
+  Hive.registerAdapter(StudentAdapter());
+  final attendanceBox = await Hive.openBox<Student>('attendance_test'); // Use a test-specific box
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+  testWidgets('Verify HomeScreen loads correctly', (WidgetTester tester) async {
+    // Build the app
+    await tester.pumpWidget(MyApp(attendanceBox: attendanceBox));
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
+    // Verify AppBar title
+    expect(find.text('Attendance Management'), findsOneWidget);
+
+    // Verify the presence of buttons
+    expect(find.text('Mark Attendance for Alice'), findsOneWidget);
+    expect(find.text('Check Alice\'s Attendance'), findsOneWidget);
+  });
+
+  testWidgets('Mark Attendance Button Test', (WidgetTester tester) async {
+    // Build the app
+    await tester.pumpWidget(MyApp(attendanceBox: attendanceBox));
+
+    // Tap on the 'Mark Attendance for Alice' button
+    await tester.tap(find.text('Mark Attendance for Alice'));
     await tester.pump();
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    // Verify a snackbar appears with the expected text
+    expect(find.text('Attendance for Alice marked as present!'), findsOneWidget);
+  });
+
+  testWidgets('Check Attendance Button Test', (WidgetTester tester) async {
+    // Add test data to the Hive box
+    attendanceBox.put('student_1', Student(name: 'Alice', isPresent: true));
+
+    // Build the app
+    await tester.pumpWidget(MyApp(attendanceBox: attendanceBox));
+
+    // Tap on the 'Check Alice\'s Attendance' button
+    await tester.tap(find.text('Check Alice\'s Attendance'));
+    await tester.pump();
+
+    // Verify a snackbar appears with the expected attendance data
+    expect(find.text('Student: Alice, Present: true'), findsOneWidget);
   });
 }

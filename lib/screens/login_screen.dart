@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'dashboard_screen.dart';
+import '../widgets/custom_button.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -13,11 +14,14 @@ class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _auth = FirebaseAuth.instance;
-  
-  final _formKey = GlobalKey<FormState>(); // For form validation
+  final _formKey = GlobalKey<FormState>();
+  bool _isLoading = false; // New: Loading state
 
   Future<void> _login() async {
     if (_formKey.currentState?.validate() ?? false) {
+      setState(() {
+        _isLoading = true; // Show loading spinner
+      });
       try {
         await _auth.signInWithEmailAndPassword(
           email: _emailController.text,
@@ -28,7 +32,13 @@ class _LoginScreenState extends State<LoginScreen> {
           MaterialPageRoute(builder: (context) => DashboardScreen()),
         );
       } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Login Failed')));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Login Failed: ${e.toString()}')),
+        );
+      } finally {
+        setState(() {
+          _isLoading = false; // Hide loading spinner
+        });
       }
     }
   }
@@ -39,7 +49,7 @@ class _LoginScreenState extends State<LoginScreen> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text('Teacher AI Tool'),
-        backgroundColor: Colors.deepPurpleAccent, // Custom AppBar color
+        backgroundColor: Colors.deepPurpleAccent,
         centerTitle: true,
       ),
       body: Stack(
@@ -49,7 +59,7 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Image.asset(
               'assets/images/background.jpg',
               fit: BoxFit.cover,
-              color: Colors.black.withOpacity(0.5), // Dark overlay for readability
+              color: Colors.black.withOpacity(0.5),
               colorBlendMode: BlendMode.darken,
             ),
           ),
@@ -59,12 +69,12 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Center(
               child: SingleChildScrollView(
                 child: Form(
-                  key: _formKey, // Use form for validation
+                  key: _formKey,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
-                      // Logo with custom styling
+                      // Logo
                       Image.asset('assets/logo.png', width: 180, height: 180),
                       SizedBox(height: 20),
                       Text(
@@ -76,7 +86,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                       SizedBox(height: 40),
-                      // Email input field
+                      // Email input
                       TextFormField(
                         controller: _emailController,
                         keyboardType: TextInputType.emailAddress,
@@ -101,7 +111,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         },
                       ),
                       SizedBox(height: 20),
-                      // Password input field
+                      // Password input
                       TextFormField(
                         controller: _passwordController,
                         obscureText: true,
@@ -126,29 +136,18 @@ class _LoginScreenState extends State<LoginScreen> {
                         },
                       ),
                       SizedBox(height: 40),
-                      // Login Button with custom style
-                      ElevatedButton(
-                        onPressed: _login,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.deepPurpleAccent, // Button color
-                          padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 50.0),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                        ),
-                        child: Text(
-                          'Login',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
+                      // Show progress indicator or button
+                      _isLoading
+                          ? CircularProgressIndicator(color: Colors.deepPurpleAccent)
+                          : CustomButton(
+                              text: 'Login',
+                              onPressed: _login,
+                            ),
                       SizedBox(height: 10),
                       // Forgot Password link
                       TextButton(
                         onPressed: () {
-                          // Handle forgot password
+                          // TODO: Implement Forgot Password
                         },
                         child: Text(
                           'Forgot Password?',
