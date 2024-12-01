@@ -7,12 +7,12 @@ class CustomButton extends StatelessWidget {
   final double borderRadius;
 
   const CustomButton({
-    Key? key,
+    super.key,
     required this.text,
     required this.onPressed,
     this.color = Colors.deepPurpleAccent,
     this.borderRadius = 30.0,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
