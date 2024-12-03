@@ -26,7 +26,7 @@ dependencies:
   google_fonts: ^6.2.1
   hive: ^2.2.3
   hive_flutter: ^1.1.0
-  path_provider: ^2.1.5  # Corrected placement of path_provider
+  path_provider: ^2.1.5
 
 dev_dependencies:
   flutter_test:
