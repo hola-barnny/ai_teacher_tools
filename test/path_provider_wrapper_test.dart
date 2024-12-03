@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/mockito.dart';  // Mockito for mocking
-import 'package:ai_teacher_tools/helpers/path_provider_wrapper.dart';  // PathProviderWrapper import
+import 'package:mockito/mockito.dart';
+import 'package:ai_teacher_tools/helpers/path_provider_wrapper.dart';  // Correct import
 
 // Mock class for PathProviderWrapper
 class MockPathProviderWrapper extends Mock implements PathProviderWrapper {}
@@ -9,8 +9,8 @@ class MockPathProviderWrapper extends Mock implements PathProviderWrapper {}
 void main() {
   late MockPathProviderWrapper mockPathProviderWrapper;
 
-  // Before each test, initialize the mock object
   setUp(() {
+    // Initialize the mock object before each test
     mockPathProviderWrapper = MockPathProviderWrapper();
   });
 
@@ -20,14 +20,16 @@ void main() {
       when(mockPathProviderWrapper.getApplicationDocumentsDirectory())
           .thenAnswer((_) async => Directory('/mock/documents'));
 
-      // Call the mocked method
-      final directory = await mockPathProviderWrapper.getApplicationDocumentsDirectory();
+      // Use the mock method
+      final directory =
+          await mockPathProviderWrapper.getApplicationDocumentsDirectory();
 
-      // Assert that the returned directory path is correct
+      // Assert that the returned path is correct
       expect(directory.path, equals('/mock/documents'));
 
       // Verify the method was called once
-      verify(mockPathProviderWrapper.getApplicationDocumentsDirectory()).called(1);
+      verify(mockPathProviderWrapper.getApplicationDocumentsDirectory())
+          .called(1);
     });
 
     test('getApplicationDocumentsDirectory handles exceptions gracefully', () async {
@@ -42,7 +44,8 @@ void main() {
       );
 
       // Verify the method was called once
-      verify(mockPathProviderWrapper.getApplicationDocumentsDirectory()).called(1);
+      verify(mockPathProviderWrapper.getApplicationDocumentsDirectory())
+          .called(1);
     });
   });
 }
